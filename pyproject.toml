@@ -6,7 +6,9 @@ authors = ["GabsMarcelino <gmarcelino@tractian.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
+aiohttp = "^3.13.0"
+requests = "^2.32.5"
 
 
 [build-system]
