@@ -19,12 +19,13 @@ def start_client(host="127.0.0.1", port=50051):
     sock.connect((host, port))
 
     thread = threading.Thread(target=receive_messages, args=(sock,), daemon=True)
-    thread.start()
-    thread.join()
 
     print("Type Agent Id to connect")
     agent_id = input()
     sock.send(agent_id.encode( "utf-8"))
+
+    thread.start()
+
     while True:
         msg = input()
         if msg.lower() == "exit":
@@ -32,7 +33,6 @@ def start_client(host="127.0.0.1", port=50051):
         sock.send(msg.encode("utf-8"))
 
     sock.close()
-
 
 if __name__ == "__main__":
     start_client()
