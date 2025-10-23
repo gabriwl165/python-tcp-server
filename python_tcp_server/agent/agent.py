@@ -14,7 +14,10 @@ def receive_messages(sock):
             response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_name}")
             try:
                 pokemon = response.json()
-                sock.send(json.dumps(pokemon).encode("utf-8"))
+                sprites = pokemon.get("sprites", {})
+                front_default = sprites.get("front_default", "")
+                print(front_default)
+                sock.send(front_default.encode("utf-8"))
             except Exception as json_err:
                 logger.error(f"Error decoding JSON for '{pokemon_name}': {json_err}\nResponse text: {response.text}")
                 break
