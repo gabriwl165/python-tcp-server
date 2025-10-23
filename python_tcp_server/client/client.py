@@ -1,18 +1,32 @@
 import socket
 import threading
+from rich.console import Console
+from PIL import Image
+import io
+import requests
+
+console = Console()
+
+def show_image(url):
+    img = Image.open(io.BytesIO(requests.get(url).content)).convert('L')
+    img = img.resize((80, 40))  # smaller for terminal
+    chars = " .:-=+*#%@"
+    pixels = img.getdata()
+    ascii_str = "".join(chars[p // 25] for p in pixels)
+    for i in range(0, len(ascii_str), img.width):
+        print(ascii_str[i:i + img.width])
+
 
 def receive_messages(sock):
-    msg = sock.recv(1024).decode("utf-8")
-    if not msg:
-        return
-            
     while True:
-        pokemon_image = sock.recv(1024).decode("utf-8")
-        print(pokemon_image)
-        if not pokemon_image:
-            continue
-        print(pokemon_image)
-        break
+        try:
+            pokemon_image = sock.recv(1024).decode("utf-8")
+            if not pokemon_image:
+                break
+            show_image(pokemon_image)
+        except Exception as e:
+            print(f"Error receiving message: {e}")
+            break
 
 def start_client(host="127.0.0.1", port=50051):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
